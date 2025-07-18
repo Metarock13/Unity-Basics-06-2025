@@ -4,28 +4,26 @@ namespace Code
 {
     public class Character : MonoBehaviour
     {
-        public enum CharacterType
-        {
-            Player,
-            Ally,
-            Enemy
-        }
-        
+        #region Public Fields (Публичные)
         public CharacterType characterType;
-        
-        private float hp = 100.0f;
         public bool isDeath = false;
+        #endregion
+
+        #region Private Fields (Приватные)
+        private float hp = 100.0f;
         private float baseDamage = 10.0f;
         private float damageMultiplier = 1.5f;
-        
-        [SerializeField]
+
+        [SerializeField] 
         private MeshRenderer meshRenderer;
+
         private Color greyColor = Color.grey;
         private Color redColor = Color.red;
         private Color blueColor = Color.blue;
         private Color defaultColor = Color.white;
-        
-        void Start()
+        #endregion
+
+        private void Start()
         {
             SetColorByType(); 
         }
@@ -64,7 +62,7 @@ namespace Code
         private void TakeDamage(float damage, Character attacker)
         {
             if (isDeath) return;
-            
+
             hp -= damage;
             if (hp <= 0)
             {
@@ -80,11 +78,11 @@ namespace Code
                 Attack(attacker);
             }
         }
-        
+
         private void TakeDamage(int damage, Character attacker)
         {
             if (isDeath) return;
-            
+
             hp -= damage;
             if (hp <= 0)
             {

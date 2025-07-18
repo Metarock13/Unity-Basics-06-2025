@@ -3,12 +3,12 @@ using UnityEngine;
 
 namespace Code
 {
-    public class BattleManager: MonoBehaviour
+    public class BattleManager : MonoBehaviour
     {
         public Character characterPrefab;
         public int alliesCount = 4;
         public int enemiesCount = 5;
-        
+
         private List<Character> allies = new List<Character>();
         private List<Character> enemies = new List<Character>();
 
@@ -24,17 +24,17 @@ namespace Code
             {
                 var pos = new Vector3(-5 + i * 2, 0, 0);
                 var ally = Instantiate(characterPrefab, pos, Quaternion.identity);
-                ally.characterType = Character.CharacterType.Ally;
+                ally.characterType = CharacterType.Ally;
                 ally.gameObject.name = "Ally_" + i;
                 allies.Add(ally);
             }
             allies.Add(characterPrefab);
-            
+
             for (int i = 0; i < enemiesCount; i++)
             {
                 var pos = new Vector3(5 + i * 2, 0, 0);
                 var enemy = Instantiate(characterPrefab, pos, Quaternion.identity);
-                enemy.characterType = Character.CharacterType.Enemy;
+                enemy.characterType = CharacterType.Enemy;
                 enemy.gameObject.name = "Enemy_" + i;
                 enemies.Add(enemy);
             }
@@ -52,6 +52,5 @@ namespace Code
                 }
             }
         }
-        
     }
 }
