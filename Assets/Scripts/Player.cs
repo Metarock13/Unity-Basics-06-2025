@@ -38,10 +38,10 @@ public class Player : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        var medkit = other.gameObject.GetComponent<Medkit>();
+        var medkit = other.gameObject.GetComponent<MedKit>();
         if (medkit)
         {
-           Heal(Medkit.HealAmount);
+           Heal(MedKit.HealAmount);
            Destroy(medkit.gameObject);
         }
     }
