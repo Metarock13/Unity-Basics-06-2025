@@ -709,7 +709,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c6a140a16bcb413f9e4ac751dce9edfe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  medkitPrefab: {fileID: 4995471350066297317, guid: 459903e4ed4304ef08e025f86a8a9dc8, type: 3}
+  medkitPrefab: {fileID: 2392215594678464126, guid: 459903e4ed4304ef08e025f86a8a9dc8, type: 3}
   spawnPoints:
   - {fileID: 1174651455}
   - {fileID: 1592079550}
@@ -915,7 +915,7 @@ GameObject:
   - component: {fileID: 2108997619}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1018,6 +1018,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0855b10607814856ab36178ffec938fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  usePhysicsMovement: 0
 --- !u!54 &2108997619
 Rigidbody:
   m_ObjectHideFlags: 0
