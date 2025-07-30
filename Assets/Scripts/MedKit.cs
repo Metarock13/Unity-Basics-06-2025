@@ -1,7 +1,21 @@
 using UnityEngine;
 
-public class MedKit : MonoBehaviour
+namespace Scripts
 {
-    public const float HealAmount = 25f;
+    public class MedKit : MonoBehaviour
+    {
+        [SerializeField] private float healAmount;
         
+        private void OnTriggerEnter(Collider other)
+        {
+            if (other.CompareTag("Player"))
+            {
+                if (other.TryGetComponent<Player>(out var player))
+                {
+                    player.Heal(healAmount);
+                    Destroy(gameObject);
+                }
+            }
+        }
+    }
 }

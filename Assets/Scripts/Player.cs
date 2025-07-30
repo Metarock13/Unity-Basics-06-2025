@@ -1,54 +1,59 @@
 using UnityEngine;
 
-public class Player : MonoBehaviour
+namespace Scripts
 {
-    private const float MoveSpeed = 5f;
-    private const float RotateSpeed = 200f;
-
-    private const float MaxHealth = 100f;
-    private float _currentHealth = 50f;
-        
-    private Rigidbody _rb;
-
-    private void Start()
+    public class Player : MonoBehaviour
     {
-        _rb = GetComponent<Rigidbody>();
-    }
+        private const float MoveSpeed = 5f;
+        private const float RotateSpeed = 200f;
+
+        private const float MaxHealth = 100f;
+        private float _currentHealth = 50f;
+
+        [SerializeField] private bool usePhysicsMovement = true;
     
-    private void FixedUpdate()
-    {
-        var move = Input.GetAxis("Vertical") * MoveSpeed;
-        var rotate = Input.GetAxis("Horizontal") * RotateSpeed * Time.fixedDeltaTime;
-        
-        var moveDirection = transform.forward * (move * Time.fixedDeltaTime);
-        _rb.MovePosition(_rb.position + moveDirection);
-        
-        var rotateDirection = Quaternion.Euler(0f, rotate, 0f);
-        _rb.MoveRotation(_rb.rotation * rotateDirection);
-    }
-    
-    private void Update()
-    {
-        var move = Input.GetAxis("Vertical") * MoveSpeed * Time.deltaTime;
-        var rotate = Input.GetAxis("Horizontal") * RotateSpeed * Time.deltaTime;
-            
-        transform.Translate(Vector3.forward * move);
-        transform.Rotate(Vector3.up * rotate);
-    }
+        private Rigidbody _rb;
 
-    private void OnTriggerEnter(Collider other)
-    {
-        var medkit = other.gameObject.GetComponent<MedKit>();
-        if (medkit)
+        private void Start()
         {
-           Heal(MedKit.HealAmount);
-           Destroy(medkit.gameObject);
+            _rb = GetComponent<Rigidbody>();
         }
-    }
+    
+        private void FixedUpdate()
+        {
+            if (!usePhysicsMovement)
+            {
+                return;
+            }
+        
+            var move = Input.GetAxis("Vertical") * MoveSpeed;
+            var rotate = Input.GetAxis("Horizontal") * RotateSpeed * Time.fixedDeltaTime;
+        
+            var moveDirection = transform.forward * (move * Time.fixedDeltaTime);
+            _rb.MovePosition(_rb.position + moveDirection);
+        
+            var rotateDirection = Quaternion.Euler(0f, rotate, 0f);
+            _rb.MoveRotation(_rb.rotation * rotateDirection);
+        }
+    
+        private void Update()
+        {
+            if (usePhysicsMovement)
+            {
+                return;
+            }
+        
+            var move = Input.GetAxis("Vertical") * MoveSpeed * Time.deltaTime;
+            var rotate = Input.GetAxis("Horizontal") * RotateSpeed * Time.deltaTime;
+            
+            transform.Translate(Vector3.forward * move);
+            transform.Rotate(Vector3.up * rotate);
+        }
 
-    private void Heal(float amount)
-    {
-        _currentHealth = Mathf.Min(_currentHealth + amount, MaxHealth);
-        Debug.Log("Healed: " + amount + ", Health: " + _currentHealth);
+        internal void Heal(float amount)
+        {
+            _currentHealth = Mathf.Min(_currentHealth + amount, MaxHealth);
+            Debug.Log("Healed: " + amount + ", Health: " + _currentHealth);
+        }
     }
 }

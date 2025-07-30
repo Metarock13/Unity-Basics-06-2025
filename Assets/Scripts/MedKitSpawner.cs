@@ -1,15 +1,18 @@
 using UnityEngine;
 
-public class MedKitSpawner : MonoBehaviour
+namespace Scripts
 {
-    public GameObject medkitPrefab;
-    public Transform[] spawnPoints;
-
-    private void Start()
+    public class MedKitSpawner : MonoBehaviour
     {
-        foreach (var spawnPoint in spawnPoints)
+        public MedKit medkitPrefab;
+        public Transform[] spawnPoints;
+
+        private void Start()
         {
-            Instantiate(medkitPrefab, spawnPoint.position, medkitPrefab.transform.rotation);
+            foreach (var spawnPoint in spawnPoints)
+            {
+                Instantiate(medkitPrefab, spawnPoint.position, medkitPrefab.transform.rotation);
+            }
         }
     }
 }
