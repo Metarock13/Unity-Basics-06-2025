@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Configs;
 using UnityEngine;
 
 namespace Scripts
@@ -6,14 +7,27 @@ namespace Scripts
     public class HitscanWeapon : WeaponBase
     {
         [Header("Bullet Hole")]
-        [SerializeField] private GameObject bulletHolePrefab;
-        [SerializeField] private float holeSize = 0.12f;
-        [SerializeField] private float normalOffset = 0.002f;
-        [SerializeField] private int maxHoles = 60;
-        [SerializeField] private float holeLifetime = 20f;
+        [SerializeField] protected GameObject bulletHolePrefab;
+        [SerializeField] protected float holeSize = 0.12f;
+        [SerializeField] protected float normalOffset = 0.002f;
+        [SerializeField] protected int maxHoles = 60;
+        [SerializeField] protected float holeLifetime = 20f;
 
         private readonly Queue<GameObject> _holes = new();
-        
+
+        protected override void Awake()
+        {
+            base.Awake();
+            if (config is HitscanWeaponConfig hc)
+            {
+                bulletHolePrefab = hc.BulletHolePrefab;
+                holeSize = hc.HoleSize;
+                normalOffset = hc.NormalOffset;
+                maxHoles = hc.MaxHoles;
+                holeLifetime = hc.HoleLifetime;
+            }
+        }
+
         protected override void OnFire()
         {
             if (!barrel) {Debug.LogWarning("No barrel!");
@@ -37,7 +51,7 @@ namespace Scripts
             }
         }
 
-        private void SpawnBulletHole(RaycastHit hit)
+        protected void SpawnBulletHole(RaycastHit hit)
         {
             if (!bulletHolePrefab) return;
             

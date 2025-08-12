@@ -1,3 +1,4 @@
+using Configs;
 using UnityEngine;
 
 namespace Scripts
@@ -12,14 +13,27 @@ namespace Scripts
         [SerializeField] protected float shotDelay = 0.1f;
         [SerializeField] protected int magazineSize = 6;
         [SerializeField] protected int totalAmmo = 18;
+        [SerializeField] protected WeaponConfigBase config;
 
         protected float _cooldown;
         protected float _currentAmmo;
 
         public virtual void OnSelect() => gameObject.SetActive(true);
         public virtual void OnDeselect() => gameObject.SetActive(false);
-        
-        protected virtual void Awake() { _currentAmmo = magazineSize; }
+
+        protected virtual void Awake()
+        {
+            if (config)
+            {
+                damage = config.Damage;
+                range = config.Range;
+                force = config.Force;
+                shotDelay = config.ShotDelay;
+                magazineSize = config.MagazineSize;
+                totalAmmo = config.TotalAmmo;
+            }
+            _currentAmmo = magazineSize;
+        }
 
         protected virtual void Update()
         {
@@ -40,7 +54,7 @@ namespace Scripts
             _currentAmmo--;
             OnFire();
         }
-        
+
         public virtual void Recharge()
         {
             if (Mathf.Approximately(_currentAmmo, magazineSize))
