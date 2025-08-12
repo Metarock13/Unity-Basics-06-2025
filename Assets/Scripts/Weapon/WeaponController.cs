@@ -9,6 +9,12 @@ namespace Scripts
         [SerializeField] private int startIndex = 0;
 
         private int _current;
+        private static readonly KeyCode[] NumberKeys =
+        {
+            KeyCode.Alpha1, KeyCode.Alpha2, KeyCode.Alpha3,
+            KeyCode.Alpha4, KeyCode.Alpha5, KeyCode.Alpha6,
+            KeyCode.Alpha7, KeyCode.Alpha8, KeyCode.Alpha9
+        };
 
         private void Start()
         {
@@ -38,9 +44,15 @@ namespace Scripts
                 weapons[_current].Recharge();
             }
 
-            if (Input.GetKeyDown(KeyCode.Alpha1)) SwitchTo(0);
-            if (Input.GetKeyDown(KeyCode.Alpha2)) SwitchTo(1);
-            if (Input.GetKeyDown(KeyCode.Alpha3)) SwitchTo(2);
+            int max = Mathf.Min(weapons.Count, NumberKeys.Length);
+            for (int i = 0; i < max; i++)
+            {
+                if (Input.GetKeyDown(NumberKeys[i]))
+                {
+                    SwitchTo(i);
+                    break;
+                }
+            }
             
             float scroll = Input.GetAxis("Mouse ScrollWheel");
             if (scroll > 0f) Next();

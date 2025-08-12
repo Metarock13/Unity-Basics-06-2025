@@ -13,7 +13,9 @@ namespace Scripts
         [SerializeField] protected int maxHoles = 60;
         [SerializeField] protected float holeLifetime = 20f;
 
-        private readonly Queue<GameObject> _holes = new();
+        private readonly Queue<GameObject> _activeHoles = new();
+        private readonly Queue<GameObject> _pooledHoles = new();
+        private readonly List<GameObject> _allHoles = new();
 
         protected override void Awake()
         {
@@ -59,19 +61,74 @@ namespace Scripts
             var rot = Quaternion.LookRotation(-hit.normal, Vector3.up);
             rot *= Quaternion.Euler(0, 0, Random.Range(0f, 360f));
 
-            var hole = Instantiate(bulletHolePrefab, pos, rot);
+            GameObject hole = GetPooledHole();
+            if (!hole)
+            {
+                hole = Instantiate(bulletHolePrefab);
+                _allHoles.Add(hole);
+            }
+
+            hole.transform.position = pos;
+            hole.transform.rotation = rot;
             float s = holeSize * Random.Range(0.95f, 1.05f);
             hole.transform.localScale = new Vector3(s, s, s);
             hole.transform.SetParent(hit.collider.transform, true);
+            hole.SetActive(true);
             
-            _holes.Enqueue(hole);
-            if (_holes.Count > maxHoles)
+            _activeHoles.Enqueue(hole);
+            
+            if (_activeHoles.Count > maxHoles)
             {
-                var old = _holes.Dequeue();
-                if (old) Destroy(old);
+                var oldHole = _activeHoles.Dequeue();
+                if (oldHole) ReturnHoleToPool(oldHole);
             }
             
-            if (holeLifetime > 0f) Destroy(hole, holeLifetime);
+            if (holeLifetime > 0f)
+            {
+                StartCoroutine(ReturnHoleAfterDelay(hole, holeLifetime));
+            }
+        }
+
+        private GameObject GetPooledHole()
+        {
+            if (_pooledHoles.Count > 0)
+            {
+                return _pooledHoles.Dequeue();
+            }
+            return null;
+        }
+
+        private void ReturnHoleToPool(GameObject hole)
+        {
+            if (!hole) return;
+            hole.SetActive(false);
+            hole.transform.SetParent(transform, false);
+            _pooledHoles.Enqueue(hole);
+        }
+
+        private System.Collections.IEnumerator ReturnHoleAfterDelay(GameObject hole, float delay)
+        {
+            yield return new WaitForSeconds(delay);
+            if (hole && hole.activeInHierarchy)
+            {
+                var tempList = new List<GameObject>(_activeHoles.Count);
+                while (_activeHoles.Count > 0)
+                {
+                    var h = _activeHoles.Dequeue();
+                    if (h != hole && h) tempList.Add(h);
+                }
+                foreach (var h in tempList) _activeHoles.Enqueue(h);
+                
+                ReturnHoleToPool(hole);
+            }
+        }
+
+        private void OnDestroy()
+        {
+            foreach (var hole in _allHoles)
+            {
+                if (hole) Destroy(hole);
+            }
         }
     }
 }
