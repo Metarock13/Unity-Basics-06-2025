@@ -7,8 +7,8 @@ namespace Scripts
     {
         [SerializeField] private float flashDuration = 0.1f;
         [SerializeField] private float lifeTime = 5.0f;
-        [SerializeField] private float fadeInterval = 0.1f; // время между шагами фейда
-        [SerializeField] private float fadeStep = 0.1f;     // шаг уменьшения альфы
+        [SerializeField] private float fadeInterval = 0.1f;
+        [SerializeField] private float fadeStep = 0.1f;
         
         private Renderer _renderer;
         private Material _material;
@@ -58,7 +58,6 @@ namespace Scripts
 
         private IEnumerator DestroySequence()
         {
-            // Ждём указанное время жизни, затем плавно скрываем и удаляем объект
             if (lifeTime > 0f) yield return new WaitForSeconds(lifeTime);
             yield return StartCoroutine(FadeOut());
             Destroy(gameObject);
