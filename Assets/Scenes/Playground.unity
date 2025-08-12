@@ -494,6 +494,7 @@ MonoBehaviour:
   shotDelay: 0.08
   magazineSize: 30
   totalAmmo: 180
+  config: {fileID: 11400000, guid: 2778b4e69ec494e819dec66e0d080bc8, type: 2}
   bulletHolePrefab: {fileID: 2473029230087183939, guid: b075fdf40e54245c79b248a08b524369, type: 3}
   holeSize: 0.1
   normalOffset: 0.002
@@ -982,6 +983,7 @@ MonoBehaviour:
   shotDelay: 0.25
   magazineSize: 12
   totalAmmo: 108
+  config: {fileID: 11400000, guid: 2778b4e69ec494e819dec66e0d080bc8, type: 2}
   bulletHolePrefab: {fileID: 2473029230087183939, guid: b075fdf40e54245c79b248a08b524369, type: 3}
   holeSize: 0.12
   normalOffset: 0.002
@@ -1891,6 +1893,7 @@ MonoBehaviour:
   shotDelay: 0.9
   magazineSize: 8
   totalAmmo: 48
+  config: {fileID: 11400000, guid: 21f5588f18e08462581d181fbd305dd3, type: 2}
   bulletHolePrefab: {fileID: 2473029230087183939, guid: b075fdf40e54245c79b248a08b524369, type: 3}
   holeSize: 0.14
   normalOffset: 0.0025
