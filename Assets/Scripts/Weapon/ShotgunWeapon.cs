@@ -1,4 +1,5 @@
 using UnityEngine;
+using Configs;
 
 namespace Scripts
 {
@@ -7,6 +8,16 @@ namespace Scripts
         [Header("Shotgun")] 
         [SerializeField] private int pellets = 8;
         [SerializeField] private float spreadDegrees = 3f;
+
+        protected override void Awake()
+        {
+            base.Awake();
+            if (config is ShotgunWeaponConfig sc)
+            {
+                pellets = sc.Pellets;
+                spreadDegrees = sc.SpreadDegrees;
+            }
+        }
 
         protected override void OnFire()
         {
@@ -31,9 +42,7 @@ namespace Scripts
                         hit.rigidbody.AddForce(dir * force / pellets, ForceMode.Impulse);
                     }
                     
-                    var method = typeof(HitscanWeapon).GetMethod("SpawnBulletHole",
-                        System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
-                    method?.Invoke(this, new object[] { hit });
+                    SpawnBulletHole(hit);
                 }
             }
         }

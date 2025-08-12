@@ -5,84 +5,74 @@ namespace Scripts
 {
     public class HealthController : MonoBehaviour
     {
-        [SerializeField] private float health = 3.0f;
+        [SerializeField] private float flashDuration = 0.1f;
         [SerializeField] private float lifeTime = 5.0f;
-
-        private float _maxHp;
-        private bool _isAlive = true;
+        [SerializeField] private float fadeInterval = 0.1f;
+        [SerializeField] private float fadeStep = 0.1f;
         
+        private Renderer _renderer;
+        private Material _material;
+        private Color _originalColor;
+        private Coroutine _flashRoutine;
+        private Coroutine _destroyRoutine;
+
         private void Start()
         {
-            _maxHp = health;
+            _renderer = GetComponent<Renderer>();
+            if (_renderer && _renderer.material)
+            {
+                _material = _renderer.material;
+                _originalColor = _material.color;
+            }
         }
 
-        public bool TakeDamage(float damage)
+        public void TakeDamage(float damage)
         {
-            if (!_isAlive) return false;
+            if (_material == null) return;
+            if (_flashRoutine != null) StopCoroutine(_flashRoutine);
+            _flashRoutine = StartCoroutine(FlashColor(Color.red));
 
-            health -= damage;
-
-            if (health <= 0)
+            if (_destroyRoutine == null)
             {
-                StartCoroutine(Die());
-                _isAlive = false;
-                return false;
+                _destroyRoutine = StartCoroutine(DestroySequence());
             }
-            
-            return true;
         }
 
         public bool CanAddHealth()
         {
-            if (_isAlive == false)
+            if (_material != null)
             {
-                return false;
+                if (_flashRoutine != null) StopCoroutine(_flashRoutine);
+                _flashRoutine = StartCoroutine(FlashColor(Color.green));
             }
-
-            if (health >= _maxHp)
-            {
-                return false;
-            }
-
-            var hp = health + _maxHp * 0.25f;
-
-            health = Mathf.Min(hp, _maxHp);
-            
             return true;
         }
 
-        private IEnumerator Die()
+        private IEnumerator FlashColor(Color color)
         {
-            var component = GetComponent<Renderer>();
-            
-            component.material.color = Color.red;
-            yield return new WaitForSeconds(1.0f);
-            component.material.color = Color.green;
-            yield return new WaitForSeconds(1.0f);
-            component.material.color = Color.red;
-            yield return new WaitForSeconds(1.0f);
-            component.material.color = Color.magenta;
-
-
-            yield return new WaitForSeconds(lifeTime);
-
-            StartCoroutine(Fade());
+            _material.color = color;
+            yield return new WaitForSeconds(flashDuration);
+            _material.color = _originalColor;
+            _flashRoutine = null;
         }
 
-        private IEnumerator Fade()
+        private IEnumerator DestroySequence()
         {
-            if (TryGetComponent(out Renderer component))
-            {
-                Color color = component.material.color;
-                for (float alpha = 1.0f; alpha >= 0.0f; alpha -= 0.1f)
-                {
-                    color.a = alpha;
-                    component.material.color = color;
-                    yield return new WaitForSeconds(0.1f);
-                }
-            }
-            
+            if (lifeTime > 0f) yield return new WaitForSeconds(lifeTime);
+            yield return StartCoroutine(FadeOut());
             Destroy(gameObject);
+        }
+
+        private IEnumerator FadeOut()
+        {
+            if (_material == null) yield break;
+            Color color = _material.color;
+            for (float a = 1.0f; a >= 0.0f; a -= Mathf.Abs(fadeStep))
+            {
+                color.a = a;
+                _material.color = color;
+                yield return new WaitForSeconds(Mathf.Max(0.01f, fadeInterval));
+            }
         }
     }
 }
