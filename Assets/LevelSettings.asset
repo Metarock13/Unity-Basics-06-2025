@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2963cf80f9fdd4558b0b5a3c02aaa4d9, type: 3}
+  m_Name: LevelSettings
+  m_EditorClassIdentifier: Assembly-CSharp::Scripts.LevelSettings
+  LevelData:
+  - Color: {r: 1, g: 0, b: 0.036886215, a: 0}
+  - Color: {r: 1, g: 0.4363277, b: 0, a: 0}
+  - Color: {r: 1, g: 0.8391529, b: 0, a: 0}
+  - Color: {r: 0.4239595, g: 1, b: 0.02352941, a: 0}
+  - Color: {r: 0.02352941, g: 1, b: 0.87252486, a: 0}
+  - Color: {r: 0.02352941, g: 0.11311421, b: 1, a: 0}
+  - Color: {r: 1, g: 0.023584902, b: 0.83805114, a: 0}
