@@ -1,3 +1,4 @@
+using System;
 using Code.Gameplay.Infrastructure.Services;
 using UnityEngine;
 
@@ -24,26 +25,36 @@ namespace Code.Gameplay.Features.Enemy
         [Header("Audio")]
         [SerializeField] private bool spatial3D = true;
 
-        private float _hp;
+        [Header("Components")]
+        [SerializeField] private MonoBehaviour[] disableOnDeath;
+
+        public float CurrentHP { get; private set; }
+        public float MaxHP => maxHP;
+        public bool IsDead => _dead;
+
+        public event Action<float, float> OnHealthChanged;
+        public event Action OnDied;
+
         private float _lastHurtTime;
         private bool _dead;
-
-        [SerializeField] private MonoBehaviour[] disableOnDeath;
         private Collider[] _colliders;
 
         private void Awake()
         {
-            _hp = Mathf.Max(0, maxHP);
+            CurrentHP = Mathf.Max(0, maxHP);
             _colliders = GetComponentsInChildren<Collider>();
+
+            OnHealthChanged?.Invoke(CurrentHP, MaxHP);
         }
 
         public void TakeDamage(float damage, Vector3 hitPoint)
         {
             if (_dead || damage <= 0f) return;
 
-            _hp = Mathf.Max(0f, _hp - damage);
+            CurrentHP = Mathf.Max(0f, CurrentHP - damage);
+            OnHealthChanged?.Invoke(CurrentHP, MaxHP);
 
-            if (_hp > 0f)
+            if (CurrentHP > 0f)
             {
                 PlayHurt(hitPoint);
                 return;
@@ -58,10 +69,11 @@ namespace Code.Gameplay.Features.Enemy
         {
             if (hurtClips == null || hurtClips.Length == 0) return;
             if (Time.time - _lastHurtTime < minHurtInterval) return;
+
             _lastHurtTime = Time.time;
 
-            var clip = hurtClips[Random.Range(0, hurtClips.Length)];
-            float pitch = Random.Range(hurtPitch.x, hurtPitch.y);
+            var clip = hurtClips[UnityEngine.Random.Range(0, hurtClips.Length)];
+            float pitch = UnityEngine.Random.Range(hurtPitch.x, hurtPitch.y);
 
             PlayClip(clip, pos, hurtVolume, pitch, priority: 56, bus: SFXBus.Hurt);
         }
@@ -79,11 +91,13 @@ namespace Code.Gameplay.Features.Enemy
 
             if (deathClips != null && deathClips.Length > 0)
             {
-                var clip = deathClips[Random.Range(0, deathClips.Length)];
-                float pitch = Random.Range(deathPitch.x, deathPitch.y);
+                var clip = deathClips[UnityEngine.Random.Range(0, deathClips.Length)];
+                float pitch = UnityEngine.Random.Range(deathPitch.x, deathPitch.y);
 
                 PlayClip(clip, pos, deathVolume, pitch, priority: 48, bus: SFXBus.Death);
             }
+
+            OnDied?.Invoke();
 
             if (destroyOnDeath) Destroy(gameObject, despawnDelay);
         }

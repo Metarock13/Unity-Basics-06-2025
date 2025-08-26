@@ -5,11 +5,22 @@ namespace Code.Gameplay.Features.Weapons
 {
     public class BulletDamage : MonoBehaviour
     {
-        [SerializeField] private float damage;
+        [SerializeField] private float damage = 10f;
         [SerializeField] private bool destroyOnHit = true;
 
-        void OnTriggerEnter(Collider other) => TryHit(other, other.ClosestPoint(transform.position));
-        void OnCollisionEnter(Collision c)   => TryHit(c.collider, c.contacts.Length > 0 ? c.contacts[0].point : transform.position);
+        private void OnTriggerEnter(Collider other)
+        {
+            TryHit(other, transform.position);
+        }
+
+        private void OnCollisionEnter(Collision collision)
+        {
+            Vector3 hitPoint = collision.contacts.Length > 0 
+                ? collision.contacts[0].point 
+                : transform.position;
+
+            TryHit(collision.collider, hitPoint);
+        }
 
         private void TryHit(Collider col, Vector3 hitPoint)
         {
@@ -19,7 +30,8 @@ namespace Code.Gameplay.Features.Weapons
                 enemy.TakeDamage(damage, hitPoint);
             }
 
-            if (destroyOnHit) Destroy(gameObject);
+            if (destroyOnHit)
+                Destroy(gameObject);
         }
     }
 }
